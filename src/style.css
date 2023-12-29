@@ -55,3 +55,7 @@ button.active {
 ::-webkit-file-upload-button {
   display: none;
 }
+
+.mb{
+  margin-bottom: 20px !important;
+}

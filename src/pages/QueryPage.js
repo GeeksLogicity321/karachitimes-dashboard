@@ -181,20 +181,21 @@ const [total,settotal] = useState(0)
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - total) : 0;
 
+
   const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
   const getdata = async () => {
     const resp = await getquery(page,rowsPerPage);
 
-    if (resp.status === true) {
-      settotal(resp.total)
-      setdata(resp.allQuery);
-    }
+    settotal(resp.total)
+    console.log(resp)
+    setdata(resp.allQuery);
+    
   };
   useEffect(() => {
     getdata();
-  }, [page]);
+  }, [page,rowsPerPage]);
 
   const Notificationhandle = async (body) => {
     const resp = await sendToAllNotification(body);
@@ -219,6 +220,9 @@ const [total,settotal] = useState(0)
             New User
           </Button> */}
         </Stack>
+
+        
+
         {/* <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
           <TextField name="title" label="Title" onChange={(e) => settitle(e.target.value)} value={title} />{' '}
           <TextField name="body" label="Body" onChange={(e) => setbody(e.target.value)} value={body} />
@@ -246,24 +250,28 @@ const [total,settotal] = useState(0)
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
                   rowCount={total}
-                  numSelected={selected.length}
+                  from="query"
+                  // numSelected={selected.length}
                   onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
+                  // onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {data.map((row) => {
                     // const { _id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(row._id) !== -1;
+                    // const selectedUser = selected.indexOf(row._id) !== -1;
 
                     return (
-                      <TableRow hover key={row._id} tabIndex={-2} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                      
+                      <TableRow hover key={row._id}  role="checkbox">
+
+                        {/* <TableCell padding="checkbox">
                           <Checkbox
                             checked={selectedUser}
                             // label="Name"
                             onChange={(event) => handleClick(event, row._id)}
                           />
-                        </TableCell>
+                        </TableCell> */}
+        
 
                         
                         <TableCell component="th" scope="row" padding="none">
@@ -288,23 +296,15 @@ const [total,settotal] = useState(0)
                             </Typography>
                           </Stack>
                         </TableCell>
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
-                        {/* <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell> */}
+                     
                       </TableRow>
                     );
                   })}
-                  {emptyRows > 0 && (
+                  {/* {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
                     </TableRow>
-                  )}
+                  )} */}
                 </TableBody>
 
                 {isNotFound && (
@@ -337,7 +337,7 @@ const [total,settotal] = useState(0)
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={                parseInt(total/rowsPerPage,10)*rowsPerPage <total?parseInt(total/rowsPerPage,10)+1:parseInt(total/rowsPerPage,10)}
+            count={total}
 
             rowsPerPage={rowsPerPage}
             page={page}

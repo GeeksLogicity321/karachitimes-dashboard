@@ -34,6 +34,7 @@ export default function UserListHead({
   numSelected,
   onRequestSort,
   onSelectAllClick,
+  from
 }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -42,13 +43,16 @@ export default function UserListHead({
   return (
     <TableHead>
       <TableRow>
+      {!["query","comment"].includes(from)&&
         <TableCell padding="checkbox">
+         
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
           />
         </TableCell>
+      }
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}

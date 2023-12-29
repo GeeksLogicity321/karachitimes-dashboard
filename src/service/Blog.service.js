@@ -1,6 +1,12 @@
 import { Action } from "./config";
 
-export const createBlog=async(payload)=>{
+export const createBlog=async(id,payload)=>{
+  if(id){
+    console.log(id)
+    const data = await Action.put(`/blog/update/blog/${id}`,payload);
+    return data.data;
+  }
+
   
   const data = await Action.post(`/blog/create/blog`,payload);
   return data.data;
@@ -19,7 +25,7 @@ export const updateBlog=async(id,payload)=>{
   return data.data;
 }
 export const deleteBlog=async(id)=>{
-  const data = await Action.get(`/blog/delete/blog/${id}`);
+  const data = await Action.delete(`/blog/delete/blog/${id}`);
   return data.data;
 }
 

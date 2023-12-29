@@ -15,8 +15,8 @@ export default function LoginForm() {
   const navigate = useNavigate();
   // admin@admin.com
   // 123123
-  const [email, setemail] = useState('admin@gmail.com');
-  const [password, setpassword] = useState('password');
+  const [email, setemail] = useState('');
+  const [password, setpassword] = useState('');
   const [error, seterror] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);

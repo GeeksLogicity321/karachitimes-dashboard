@@ -157,15 +157,18 @@ export default function BlogPage() {
     arr.splice(index, 1)
     setValues(arr)
   }
-  const handleOpen2Menu = async() => {
+  const handleOpen2Menu = async () => {
     const updateddata = (await getBlogById(id)).cleanBlogData
-console.log(updateddata)
+    console.log(updateddata)
     setpayload(updateddata.title)
     setoldimage(updateddata.featureImg)
-    setText(updateddata.data[0])
+    setText({
+      ctype: updateddata.data[0].ctype,
+      content: updateddata.data[0].content
+    })
     console.log(updateddata.hashtags.map((i) => { return i.name }))
     setValues(updateddata.hashtags.map((i) => { return i.name }))
-    
+
 
     setcategorypayload(updateddata.categories.map((i) => { return i.name }))
 
@@ -285,34 +288,27 @@ console.log(updateddata)
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const updateService = async () => {
-    // const formData = new FormData();
-    // formData.append("service", payload);
-    // formData.append("file", imagePayload);
 
-
-    await updateBlog(id, { service: payload });
-    setPage(1)
-    getdata();
-    handleCloseMenu()
-  }
   const addBlog = async () => {
     const formData = new FormData();
     formData.append("titles", payload);
-    category.filter((item)=>{
+    category.filter((item) => {
       return categorypayload.includes(item.name)
-    }).foreach((i,ind)=>{
-      formData.append(`categories[${ind}]`,i._id );
-      
+    }).map((i, ind) => {
+      formData.append(`categories[${ind}]`, i._id);
+      return i
+
     })
 
-    formData.append("featureImg", imagePayload);
-    console.log(text)
+    if (imagePayload) {
+      formData.append("featureImg", imagePayload);
+    }
+
     formData.append("data", JSON.stringify([text]));
 
     formData.append("hashtags", `${values.join(",")}`);
 
-    await createBlog(formData);
+    await createBlog(id, formData);
     getdata();
     handleCloseMenu()
   }
@@ -321,6 +317,14 @@ console.log(updateddata)
     setid('');
     setpayload('')
     setimage(null)
+    setcategorypayload([])
+    setText(
+      {
+        ctype: "text",
+        content: "",
+      }
+    )
+    setValues([])
     setoldimage(null)
     setOpen(false);
     setOpen2(false);
@@ -359,6 +363,7 @@ console.log(updateddata)
                     order={order}
                     orderBy={orderBy}
                     onRequestSort={handleRequestSort}
+                    from="blog"
 
                   />
 
@@ -402,9 +407,16 @@ console.log(updateddata)
                           <TableCell component="th" scope="row" padding="none">
 
                             <Typography variant="subtitle2" noWrap>
-                              <Link to={`/dashboard/comment/${row._id}`}>
-                                {row.commentCount ? row.commentCount : 0}
-                              </Link>
+                              {
+                                row.commentCount !== 0 ? (
+
+                                  <Link to={`/dashboard/comment/${row._id}`}>
+                                    {row.commentCount}
+                                  </Link>
+                                ) : (
+                                  0
+                                )
+                              }
                             </Typography>
 
                           </TableCell>
@@ -490,13 +502,13 @@ console.log(updateddata)
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {update ? "Update Blog" : "Add Blog"}
             </Typography>
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
 
               <TextField name="title" label="Title" onChange={(e) => setpayload(e.target.value)} value={payload} />{' '}
 
 
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
               {values.map((item, index) => (
                 <Chip size="small" onDelete={() => handleDelete(item, index)} label={item} />
               ))}
@@ -507,7 +519,7 @@ console.log(updateddata)
               />
             </Stack>
 
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
 
 
               <SunEditor lang="en" name="my-editor"
@@ -554,14 +566,14 @@ console.log(updateddata)
             </Stack>
 
 
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
 
               <Select
-              multiple
+                multiple
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 value={categorypayload}
-                onChange={(e) =>                 
+                onChange={(e) =>
                   setcategorypayload(e.target.value)
                 }
                 label="Category"
@@ -588,13 +600,13 @@ console.log(updateddata)
                   </Stack>
                 )}
               >
-                
+
                 {
                   category?.map((item) => {
-                    return <MenuItem key ={`${item._id}`} value={`${item.name}`}
-                    sx={{ justifyContent: "space-between" }}
+                    return <MenuItem key={`${item._id}`} value={`${item.name}`}
+                      sx={{ justifyContent: "space-between" }}
                     >{item.name}
-                       {categorypayload.includes(item.name) ? <CheckIcon color="info" /> : null}
+                      {categorypayload.includes(item.name) ? <CheckIcon color="info" /> : null}
                     </MenuItem>
                   })
                 }
@@ -603,7 +615,7 @@ console.log(updateddata)
               </Select>
 
             </Stack>
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
               {oldimage && !image && <img alt={payload} src={oldimage} className="blogimg" />}
               {image && <img alt={payload} src={image} />}
 
@@ -620,8 +632,8 @@ console.log(updateddata)
             </Stack>
 
 
-            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5}>
-              <Button onClick={update ? updateService : addBlog}>{update ? "Update" : "Add"}</Button>
+            <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
+              <Button onClick={addBlog}>{update ? "Update" : "Add"}</Button>
             </Stack>
           </Box>
         </Modal>

@@ -104,6 +104,7 @@ export default function CommentPage() {
   const [data, setdata] = useState([])
   const [payload, setpayload] = useState('')
   const [categorypayload, setcategorypayload] = useState('Category')
+  const [total,settotal] = useState(0)
 
 
   const [image, setimage] = useState(null
@@ -127,11 +128,10 @@ export default function CommentPage() {
     setOpen2(true)
     setupdate(false)
   }
-const [total,settotal] = useEffect(0)
   const {id} = useParams()
   const getdata = async () => {
-    settotal(data.total)
     const data = await commentofblog(id,page,rowsPerPage);
+    settotal(data.total)
 
     setdata(data.data);
     
@@ -179,7 +179,7 @@ const [total,settotal] = useEffect(0)
 
 
 
-  const handledeleteBlog = async () => {
+  const handledeleteComment = async () => {
     
     if (id !== "") {
       await deleteBlog(id);
@@ -287,7 +287,7 @@ const [total,settotal] = useEffect(0)
           </Stack>
 
           <Card>
-            <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} handledeleteUser={handledeleteBlog} />
+            {/* <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} handledeleteUser={handledeleteComment} /> */}
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800 }}>
@@ -301,7 +301,7 @@ const [total,settotal] = useEffect(0)
                     order={order}
                     orderBy={orderBy}
                     onRequestSort={handleRequestSort}
-
+                    from="comment"
                   />
 
                   <TableBody>
@@ -310,9 +310,9 @@ const [total,settotal] = useEffect(0)
                       const selectedUser = selected.indexOf(row._id) !== -1;
                       return (
                         <TableRow hover key={row._id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                          <TableCell padding="checkbox">
+                          {/* <TableCell padding="checkbox">
                             <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, row._id)} />
-                          </TableCell>
+                          </TableCell> */}
 
                          
                           <TableCell component="th" scope="row" padding="none">
@@ -512,7 +512,7 @@ const [total,settotal] = useEffect(0)
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={handledeleteBlog} />
+          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} onClick={handledeleteComment} />
           Delete
         </MenuItem>
       </Popover>

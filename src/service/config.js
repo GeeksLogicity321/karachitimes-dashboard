@@ -11,7 +11,7 @@ export const Action  = axios.create({
     "Content-Type": "application/json",
     headers: {
         
-        Authorization:`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTIxYmRjZjUxMGY2NzUyMzAwMDMwMjIiLCJpYXQiOjE2OTY3MTAxMzV9.zeSIIZ8SfuHEI1py-X_sdNN9kZQ_zmDY7rPxGCiXYYg`        
+        Authorization:`Bearer ${localStorage.getItem("token")}`        
 
         
     }
