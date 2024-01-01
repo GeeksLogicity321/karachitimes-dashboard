@@ -181,7 +181,7 @@ export default function BlogPage() {
   }
 
   const getdata = async () => {
-    const data = await getBlog(page, rowsPerPage);
+    const data = await getBlog(page+1, rowsPerPage);
     settotal(data.total)
     setdata(data.data);
     const categorydata = await getCategory()
@@ -220,7 +220,7 @@ export default function BlogPage() {
     setOrderBy(property);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - total) : 0;
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - total) : 0;
 
   const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
 
@@ -368,7 +368,7 @@ export default function BlogPage() {
                   />
 
                   <TableBody>
-                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {data.map((row) => {
                       // const { _id, name, role, status, company, avatarUrl, isVerified } = row;
                       const selectedUser = selected.indexOf(row._id) !== -1;
                       return (
@@ -443,11 +443,11 @@ export default function BlogPage() {
                         </TableRow>
                       );
                     })}
-                    {emptyRows > 0 && (
+                    {/* {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
                         <TableCell colSpan={6} />
                       </TableRow>
-                    )}
+                    )} */}
                   </TableBody>
 
                   {isNotFound && (
@@ -482,7 +482,7 @@ export default function BlogPage() {
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
               count={
-                parseInt(total / rowsPerPage, 10) * rowsPerPage < total ? (parseInt(total / rowsPerPage, 10) + 1) : parseInt(total / rowsPerPage, 10)
+                total
               }
               rowsPerPage={rowsPerPage}
               page={page}
@@ -617,7 +617,7 @@ export default function BlogPage() {
             </Stack>
             <Stack direction="row" alignItems="center" justifyContent="space-around" mb={5} className="mb">
               {oldimage && !image && <img alt={payload} src={oldimage} className="blogimg" />}
-              {image && <img alt={payload} src={image} />}
+              {image && <img alt={payload} src={image} className='blogimg' />}
 
               <Button variant="contained" component="span">
 

@@ -245,7 +245,7 @@ export default function UserPage() {
   const isNotFound = !filteredUsers.length && !!filterName;
   // const userdata = useSelector((state) => state.userListState);
   const getdata = async () => {
-    const resp = await getUsers(page,rowsPerPage);
+    const resp = await getUsers(page+1,rowsPerPage);
 
 
     if (resp.success === true) {
@@ -447,7 +447,6 @@ settotal(resp.total)
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={total}
-
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -186,7 +186,7 @@ const [total,settotal] = useState(0)
 
   const isNotFound = !filteredUsers.length && !!filterName;
   const getdata = async () => {
-    const resp = await getquery(page,rowsPerPage);
+    const resp = await getquery(page+1,rowsPerPage);
 
     settotal(resp.total)
     console.log(resp)
